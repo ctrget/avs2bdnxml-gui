@@ -1,0 +1,10 @@
+D:\git\avs2bdnxml-gui\bin\Debug\avs2bdnxml-gui.exe
+D:\git\avs2bdnxml-gui\bin\Debug\avs2bdnxml-gui.pdb
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml-gui.csprojResolveAssemblyReference.cache
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml_gui.MainForm.resources
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml_gui.Properties.Resources.resources
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml-gui.csproj.GenerateResource.Cache
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml-gui.exe
+D:\git\avs2bdnxml-gui\obj\Debug\avs2bdnxml-gui.pdb
+D:\git\avs2bdnxml-gui\Debug\avs2bdnxml-gui.exe
+D:\git\avs2bdnxml-gui\Debug\avs2bdnxml-gui.pdb
