@@ -33,8 +33,13 @@ namespace avs2bdnxml_gui
 
         private void btnstart_Click(object sender, EventArgs e)
         {
-            Subtitle.ASSFile assfile = Subtitle.ASS_LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
-
+            Common.ASSTime asstime = new Common.ASSTime();
+            Common.ASSTime asstime2 = new Common.ASSTime();
+            asstime.Parse("0:02:37.97");
+            asstime2.Parse("0:02:37.99");
+            MessageBox.Show((asstime < asstime2).ToString());
+            //ASSFile assfile = Subtitle.ASS_LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
+            
             //Subtitle.ASS_GetFrameCount(Directory.GetCurrentDirectory() + "\\2.ass", 0, 0);
             //shell = new Shell("xdelta3-3.0.8.x86-64.exe", @" -v -e -s D:\git\avs2bdnxml-gui\Debug\1.txt ""D:\ISO\zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070 (ED2000.COM).iso"" D:\git\avs2bdnxml-gui\Debug\1.patch", Directory.GetCurrentDirectory(), this.OutputDataReceived);
             //shell.Start();

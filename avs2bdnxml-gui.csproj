@@ -44,9 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ASSFile.cs" />
-    <Compile Include="Common.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Common.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

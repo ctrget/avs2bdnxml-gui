@@ -8,10 +8,29 @@ using System.Windows.Forms;
 
 namespace avs2bdnxml_gui
 {
-    public partial class Subtitle
+    public class Subtitle
     {
 
-    
+
+        private static int GetFileType(string filename)
+        {
+            string ext = Path.GetExtension(filename).ToUpper();
+
+            if (ext == ".ASS" || ext == ".SSA")
+            {
+                return 0;
+            }
+            else if (ext == ".SRT")
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+
         private static List<string> ReadFile(string filename)
         {
             if (!File.Exists(filename))
@@ -45,24 +64,32 @@ namespace avs2bdnxml_gui
 
 
 
-        public static int ASS_GetFrameCount(string filename, double fps, int filetype)
+        public static int GetFrameCount(string filename, double fps, int filetype)
         {
-            List<string> ls = ReadFile(filename);
 
-            if (ls == null)
+            int ftype = Subtitle.GetFileType(filename);
+
+            if (ftype == 0)
+            {
+                ASSFile assfile = Subtitle.LoadFromFile(filename);
+            }
+            else if (ftype == 1)
+            {
+
+            }
+            else
             {
                 return 0;
             }
 
-
-
-
+            
+    
             return 0;
         }
 
 
 
-        public static ASSFile ASS_LoadFromFile(string filename)
+        public static ASSFile LoadFromFile(string filename)
         {
             List<string> ls = ReadFile(filename);
 
@@ -137,21 +164,7 @@ namespace avs2bdnxml_gui
         }
 
 
-        public static List<ASSFile.ASS_Style> ASS_GetStyles(string filename)
-        {
-            List<string> ls = ReadFile(filename);
 
-            if (ls == null)
-            {
-                return null;
-            }
-
-
-
-
-
-            return null;
-        }
 
 
 

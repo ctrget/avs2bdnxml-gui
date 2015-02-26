@@ -7,9 +7,6 @@ using System.Windows.Forms;
 
 namespace avs2bdnxml_gui
 {
-    public partial class Subtitle
-    {
-
         public class ASSFile
         {
             public ASS_Header Header { get; set; }
@@ -185,7 +182,4 @@ namespace avs2bdnxml_gui
  
         }
 
-
-
-    }
 }
