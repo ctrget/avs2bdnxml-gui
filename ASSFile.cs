@@ -61,7 +61,9 @@ namespace avs2bdnxml_gui
 
             public class ASS_Style
             {
-                public ASS_Style(string name, string fontname, string fontsize, string primarycolour, string secondarycolour, string outlinecolour, string backcolour, string bold, string italic, string underline, string strikeout, string scalex, string scaley, string spacing, string angle, string borderstyle, string outline, string shadow, string alignment, string marginl, string marginr, string marginv, string encoding)
+                public ASS_Style(string name, string fontname, string fontsize, string primarycolour, string secondarycolour, string outlinecolour,
+                    string backcolour, string bold, string italic, string underline, string strikeout, string scalex, string scaley, string spacing, 
+                    string angle, string borderstyle, string outline, string shadow, string alignment, string marginl, string marginr, string marginv, string encoding)
                 {
                     this.Name = name; this.Fontname = fontname; this.Fontsize = fontsize; this.PrimaryColour = primarycolour;
                     this.SecondaryColour = secondarycolour; this.OutlineColour = outlinecolour; this.BackColour = backcolour; this.Bold = bold;
@@ -144,7 +146,7 @@ namespace avs2bdnxml_gui
 
             public class ASS_Event
             {
-                public ASS_Event(string layer, string start, string end, string style, string name, string marginl, string marginr, string marginv, string effect, string text)
+                public ASS_Event(string layer, Common.ASSTime start, Common.ASSTime end, string style, string name, string marginl, string marginr, string marginv, string effect, string text)
                 {
                     this.Layer = layer; this.Start = start; this.End = end; this.Style = style; this.Name = name;
                     this.MarginL = marginl; this.MarginR = marginr; this.MarginV = marginv; this.Effect = effect; this.Text = text;
@@ -156,9 +158,9 @@ namespace avs2bdnxml_gui
                 public string Layer { get; set; }
                 //起始时刻 写成 0:00:00:00 的格式
                 //即 小时:分:秒:百分之一秒
-                public string Start { get; set; }
+                public Common.ASSTime Start { get; set; }
                 //终止时刻
-                public string End { get; set; }
+                public Common.ASSTime End { get; set; }
                 //样式名称
                 public string Style { get; set; }
                 //角色姓名

@@ -45,10 +45,28 @@ namespace avs2bdnxml_gui
             public int Hour { get; set; }
             public int Minute { get; set; }
             public int Second { get; set; }
-            public int MSecond { get; set; }
+            public int SSecond { get; set; }
 
-            public ASSTime Parse(string stime)
+            public ASSTime(int hour = 0, int minute = 0, int second = 0, int ssecond = 0)
             {
+                this.Hour = hour; this.Minute = minute; this.Second = second; this.SSecond = ssecond;
+            }
+
+
+            public long GetMSecond()
+            {
+                return ((this.Hour * 3600 * 1000) + (this.Minute * 60 * 1000) + (this.Second * 1000) + ((this.SSecond + 1) * 10));
+            }
+
+            public long GetSecond()
+            {
+                return ((this.Hour * 3600) + (this.Minute * 60) + (this.Second) + ((this.SSecond + 1) * 10 / 1000));
+            }
+
+            public static ASSTime Parse(string stime)
+            {
+                ASSTime at = new ASSTime();
+                int hour, minute, second, ssecond;
 
                 string[] sa = stime.Split(new char[]{'.'}, 2);
 
@@ -63,23 +81,110 @@ namespace avs2bdnxml_gui
                 if (saa.Length != 3)
                     return null;
 
-                int hour, minute, second, msecond;
-
-                Int32.TryParse(saa[0], out hour);
-                Int32.TryParse(saa[1], out minute);
-                Int32.TryParse(saa[2], out second);
-                Int32.TryParse(sr, out msecond);
-                this.Hour = hour;
-                this.Minute = minute;
-                this.Second = second;
-                this.MSecond = msecond;
-                return this;
+                
+                int.TryParse(saa[0], out hour);
+                int.TryParse(saa[1], out minute);
+                int.TryParse(saa[2], out second);
+                int.TryParse(sr, out ssecond);
+                at.Hour = hour;
+                at.Minute = minute;
+                at.Second = second;
+                at.SSecond = ssecond;
+                return at;
             }
+
+
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null)
+                    return false;
+
+                if (obj is ASSTime)
+                {
+                    var at = obj as ASSTime;
+                    return at.GetMSecond() == this.GetMSecond();
+                }
+                else
+                    return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.GetMSecond().GetHashCode();
+            }
+
+
+
+            public static ASSTime operator+ (ASSTime lt, ASSTime rt)
+            {
+                ASSTime at = new ASSTime();
+
+                at.Hour = lt.Hour + rt.Hour;
+                at.Minute = lt.Minute + rt.Minute;
+                at.Second = lt.Second + rt.Second;
+                at.SSecond = lt.SSecond + rt.SSecond;
+
+                if (at.SSecond >= 100)
+                {
+                    at.Second += at.SSecond / 100;
+                    at.SSecond = at.SSecond % 100;
+                }
+
+                if (at.Second >= 60)
+                {
+                    at.Minute += at.Second / 60;
+                    at.Second = at.Second % 60;
+                }
+
+                if (at.Minute >= 60)
+                {
+                    at.Hour += at.Minute / 60;
+                    at.Minute = at.Minute % 60;
+                }
+
+                return at;
+            }
+
+
+            public static ASSTime operator- (ASSTime lt, ASSTime rt)
+            {
+                if (lt == rt || lt < rt)
+                    return new ASSTime();
+
+                ASSTime at = new ASSTime();
+
+                at.Hour = lt.Hour - rt.Hour;
+                at.Minute = lt.Minute - rt.Minute;
+                at.Second = lt.Second - rt.Second;
+                at.SSecond = lt.SSecond - rt.SSecond;
+
+                if (at.SSecond < 0)
+                {
+                    at.SSecond = 100 - Math.Abs(at.SSecond);
+                    at.Second -= 1;
+                }
+
+                if (at.Second < 0)
+                {
+                    at.Second = 60 - Math.Abs(at.Second);
+                    at.Minute -= 1;
+                }
+
+                if (at.Minute < 0)
+                {
+                    at.Minute = 60 - Math.Abs(at.Minute);
+                    at.Hour -= 1;
+                }
+
+                return at;
+            }
+
 
 
             public static bool operator== (ASSTime lt, ASSTime rt)
             {
-                if ((lt.Hour + lt.Minute + lt.Second + lt.MSecond) == rt.Hour + rt.Minute + rt.Second + rt.MSecond)
+                if (lt.GetMSecond() == rt.GetMSecond())
                 {
                     return true;
                 }
@@ -99,7 +204,7 @@ namespace avs2bdnxml_gui
 
             public static bool operator< (ASSTime lt, ASSTime rt)
             {
-                if ((lt.Hour + lt.Minute + lt.Second + lt.MSecond ) < (rt.Hour + rt.Minute + rt.Second + rt.MSecond))
+                if (lt.GetMSecond() < rt.GetMSecond())
                 {
                     return true;
                 }

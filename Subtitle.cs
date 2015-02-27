@@ -68,10 +68,23 @@ namespace avs2bdnxml_gui
         {
 
             int ftype = Subtitle.GetFileType(filename);
+            double framel;
 
             if (ftype == 0)
             {
                 ASSFile assfile = Subtitle.LoadFromFile(filename);
+                Common.ASSTime at = new Common.ASSTime();
+
+                foreach (var ae in assfile.Events)
+                {
+                    if (ae.End > at)
+                        at = ae.End;
+                }
+
+
+                framel = at.GetSecond() * fps;
+                return (int)Math.Round(framel);
+
             }
             else if (ftype == 1)
             {
@@ -148,7 +161,7 @@ namespace avs2bdnxml_gui
                         if (sae.Length != 10)
                             break;
 
-                        assfile.Events.Add(new ASSFile.ASS_Event(sae[0], sae[1], sae[2], sae[3], sae[4], sae[5], sae[6], sae[7], sae[8], sae[9]));
+                        assfile.Events.Add(new ASSFile.ASS_Event(sae[0], Common.ASSTime.Parse(sae[1]), Common.ASSTime.Parse(sae[2]), sae[3], sae[4], sae[5], sae[6], sae[7], sae[8], sae[9]));
                         break;
 
                 }
