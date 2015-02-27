@@ -33,13 +33,9 @@ namespace avs2bdnxml_gui
 
         private void btnstart_Click(object sender, EventArgs e)
         {
-            Common.SUBTime st1 = new Common.SUBTime();
-            Common.SUBTime st2 = new Common.SUBTime();
-            st1 = Common.SUBTime.Parse("1:12:33.056");
-            st2 = Common.SUBTime.Parse("0:12:33.056");
-            Common.SUBTime st3 = st1 - st2;
-            st3 = st3.GetAssTime();
-            MessageBox.Show("");
+            int i = "00:10:08,580 --> 00:10:14,220".IndexOf("-->");
+            string[] sa = "00:10:08,580 --> 00:10:14,220".Split(new char[]{'-', '-', '>'}, StringSplitOptions.RemoveEmptyEntries);
+            MessageBox.Show(sa[1]);
             //ASSFile assfile = Subtitle.LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
             //int fcount = Subtitle.GetFrameCount(Directory.GetCurrentDirectory() + "\\1.ass", Common.FPSList[0], 0);
             //MessageBox.Show(fcount.ToString());
