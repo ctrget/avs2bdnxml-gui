@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SRTFile.cs" />
+    <Compile Include="SSAFile.cs" />
     <Compile Include="ASSFile.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="MainForm.cs">
@@ -54,7 +56,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell.cs" />
-    <Compile Include="Subtitle.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

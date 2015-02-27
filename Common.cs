@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace avs2bdnxml_gui
 {
+    #region Class Common
     public class Common
     {
+        #region Members
         public static Resolution[] ResolutionList = new Resolution[] { new Resolution(1920, 1080), new Resolution(1280, 720), new Resolution(720, 480), new Resolution(854, 480), new Resolution(1024, 576) };
 
         public static double[] FPSList = new double[] { 23.976, 29.970, 25, 24 };
         public enum FileType
         {
             ASS,
-            SRT
+            SSA,
+            SRT,
+            REC
         }
-
+        #endregion
+        #region Class Resolution
         public class Resolution
         {
             public int X { get; set; }
@@ -27,7 +33,8 @@ namespace avs2bdnxml_gui
                 this.Y = y;
             }
         }
-
+        #endregion
+        #region Class TaskData
         public class TaskData
         {
             public string FileName { get; set; }
@@ -38,16 +45,62 @@ namespace avs2bdnxml_gui
             public bool UseVSMod { get; set; }
 
         }
+        #endregion
+        #region Methods
+        public static FileType GetFileType(string filename)
+        {
+            string ext = Path.GetExtension(filename).ToUpper();
 
+            switch (ext)
+            {
+                case ".ASS": return FileType.ASS;
+                case ".SSA": return FileType.SSA;
+                case ".SRT": return FileType.SRT;
+                default: return FileType.REC;
+            }
 
-        public class ASSTime
+        }
+
+        public static List<string> ReadFile(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                return null;
+            }
+
+            List<string> ls = new List<string>();
+
+            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    do
+                    {
+                        string s = sr.ReadLine();
+
+                        if (s.Trim() == "")
+                        {
+                            continue;
+                        }
+
+                        ls.Add(s);
+
+                    } while (!sr.EndOfStream);
+                }
+            }
+
+            return ls;
+        }
+        #endregion
+        #region Class SUBTime
+        public class SUBTime
         {
             public int Hour { get; set; }
             public int Minute { get; set; }
             public int Second { get; set; }
             public int SSecond { get; set; }
 
-            public ASSTime(int hour = 0, int minute = 0, int second = 0, int ssecond = 0)
+            public SUBTime(int hour = 0, int minute = 0, int second = 0, int ssecond = 0)
             {
                 this.Hour = hour; this.Minute = minute; this.Second = second; this.SSecond = ssecond;
             }
@@ -55,20 +108,22 @@ namespace avs2bdnxml_gui
 
             public long GetMSecond()
             {
-                return ((this.Hour * 3600 * 1000) + (this.Minute * 60 * 1000) + (this.Second * 1000) + ((this.SSecond + 1) * 10));
+                return ((this.Hour * 3600 * 1000) + (this.Minute * 60 * 1000) + (this.Second * 1000) + ((this.SSecond)));
             }
+
 
             public long GetSecond()
             {
-                return ((this.Hour * 3600) + (this.Minute * 60) + (this.Second) + ((this.SSecond + 1) * 10 / 1000));
+                return ((this.Hour * 3600) + (this.Minute * 60) + (this.Second) + ((this.SSecond) / 1000));
             }
 
-            public static ASSTime Parse(string stime)
+
+            public static SUBTime Parse(string stime)
             {
-                ASSTime at = new ASSTime();
+                SUBTime at = new SUBTime();
                 int hour, minute, second, ssecond;
 
-                string[] sa = stime.Split(new char[]{'.'}, 2);
+                string[] sa = stime.Split(new char[] { '.' }, 2);
 
                 if (sa.Length != 2)
                     return null;
@@ -76,12 +131,12 @@ namespace avs2bdnxml_gui
                 string sl = sa[0];
                 string sr = sa[1];
 
-                string[] saa = sl.Split(new char[]{':'}, 3);
+                string[] saa = sl.Split(new char[] { ':' }, 3);
 
                 if (saa.Length != 3)
                     return null;
 
-                
+
                 int.TryParse(saa[0], out hour);
                 int.TryParse(saa[1], out minute);
                 int.TryParse(saa[2], out second);
@@ -89,6 +144,12 @@ namespace avs2bdnxml_gui
                 at.Hour = hour;
                 at.Minute = minute;
                 at.Second = second;
+
+                if (sr.Length == 2)
+                {
+                    ssecond *= 10;
+                }
+                
                 at.SSecond = ssecond;
                 return at;
             }
@@ -100,9 +161,9 @@ namespace avs2bdnxml_gui
                 if (obj == null)
                     return false;
 
-                if (obj is ASSTime)
+                if (obj is SUBTime)
                 {
-                    var at = obj as ASSTime;
+                    var at = obj as SUBTime;
                     return at.GetMSecond() == this.GetMSecond();
                 }
                 else
@@ -115,20 +176,25 @@ namespace avs2bdnxml_gui
             }
 
 
-
-            public static ASSTime operator+ (ASSTime lt, ASSTime rt)
+            public SUBTime GetAssTime()
             {
-                ASSTime at = new ASSTime();
+                this.SSecond /= 10;
+                return this;
+            }
+
+            public static SUBTime operator +(SUBTime lt, SUBTime rt)
+            {
+                SUBTime at = new SUBTime();
 
                 at.Hour = lt.Hour + rt.Hour;
                 at.Minute = lt.Minute + rt.Minute;
                 at.Second = lt.Second + rt.Second;
                 at.SSecond = lt.SSecond + rt.SSecond;
 
-                if (at.SSecond >= 100)
+                if (at.SSecond >= 1000)
                 {
-                    at.Second += at.SSecond / 100;
-                    at.SSecond = at.SSecond % 100;
+                    at.Second += at.SSecond / 1000;
+                    at.SSecond = at.SSecond % 1000;
                 }
 
                 if (at.Second >= 60)
@@ -147,12 +213,12 @@ namespace avs2bdnxml_gui
             }
 
 
-            public static ASSTime operator- (ASSTime lt, ASSTime rt)
+            public static SUBTime operator -(SUBTime lt, SUBTime rt)
             {
                 if (lt == rt || lt < rt)
-                    return new ASSTime();
+                    return new SUBTime();
 
-                ASSTime at = new ASSTime();
+                SUBTime at = new SUBTime();
 
                 at.Hour = lt.Hour - rt.Hour;
                 at.Minute = lt.Minute - rt.Minute;
@@ -161,7 +227,7 @@ namespace avs2bdnxml_gui
 
                 if (at.SSecond < 0)
                 {
-                    at.SSecond = 100 - Math.Abs(at.SSecond);
+                    at.SSecond = 1000 - Math.Abs(at.SSecond);
                     at.Second -= 1;
                 }
 
@@ -182,7 +248,7 @@ namespace avs2bdnxml_gui
 
 
 
-            public static bool operator== (ASSTime lt, ASSTime rt)
+            public static bool operator ==(SUBTime lt, SUBTime rt)
             {
                 if (lt.GetMSecond() == rt.GetMSecond())
                 {
@@ -192,7 +258,7 @@ namespace avs2bdnxml_gui
                 return false;
             }
 
-            public static bool operator!= (ASSTime lt, ASSTime rt)
+            public static bool operator !=(SUBTime lt, SUBTime rt)
             {
                 if (!(lt == rt))
                 {
@@ -202,7 +268,7 @@ namespace avs2bdnxml_gui
                 return false;
             }
 
-            public static bool operator< (ASSTime lt, ASSTime rt)
+            public static bool operator <(SUBTime lt, SUBTime rt)
             {
                 if (lt.GetMSecond() < rt.GetMSecond())
                 {
@@ -212,7 +278,7 @@ namespace avs2bdnxml_gui
                 return false;
             }
 
-            public static bool operator> (ASSTime lt, ASSTime rt)
+            public static bool operator >(SUBTime lt, SUBTime rt)
             {
                 if (!(lt < rt) && lt != rt)
                 {
@@ -225,5 +291,9 @@ namespace avs2bdnxml_gui
 
         }
 
+        #endregion
+
     }
+    #endregion
+
 }

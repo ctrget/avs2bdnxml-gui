@@ -33,9 +33,16 @@ namespace avs2bdnxml_gui
 
         private void btnstart_Click(object sender, EventArgs e)
         {
-            ASSFile assfile = Subtitle.LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
-            int fcount = Subtitle.GetFrameCount(Directory.GetCurrentDirectory() + "\\1.ass", Common.FPSList[0], 0);
-            MessageBox.Show(fcount.ToString());
+            Common.SUBTime st1 = new Common.SUBTime();
+            Common.SUBTime st2 = new Common.SUBTime();
+            st1 = Common.SUBTime.Parse("1:12:33.056");
+            st2 = Common.SUBTime.Parse("0:12:33.056");
+            Common.SUBTime st3 = st1 - st2;
+            st3 = st3.GetAssTime();
+            MessageBox.Show("");
+            //ASSFile assfile = Subtitle.LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
+            //int fcount = Subtitle.GetFrameCount(Directory.GetCurrentDirectory() + "\\1.ass", Common.FPSList[0], 0);
+            //MessageBox.Show(fcount.ToString());
             
             //Subtitle.ASS_GetFrameCount(Directory.GetCurrentDirectory() + "\\2.ass", 0, 0);
             //shell = new Shell("xdelta3-3.0.8.x86-64.exe", @" -v -e -s D:\git\avs2bdnxml-gui\Debug\1.txt ""D:\ISO\zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070 (ED2000.COM).iso"" D:\git\avs2bdnxml-gui\Debug\1.patch", Directory.GetCurrentDirectory(), this.OutputDataReceived);
