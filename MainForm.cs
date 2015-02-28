@@ -16,6 +16,8 @@ namespace avs2bdnxml_gui
         public MainForm()
         {
             InitializeComponent();
+            cbxresolution.SelectedIndex = 0;
+            cbxfps.SelectedIndex = 0;
         }
 
 
@@ -24,18 +26,55 @@ namespace avs2bdnxml_gui
 
             this.Invoke(new MethodInvoker(() =>
             {
+                ParseProgress(e.Data);
+                /*
                 if (String.IsNullOrEmpty(e.Data) == false)
                     tbxlog.AppendText(e.Data + "\r\n");
+                 */
             }));
 
 
         }
 
+        private void ParseProgress(string str)
+        {
+
+            if (str.IndexOf("Progress") < 0)
+                return;
+
+            string[] sa = str.Split(' ');
+
+            if (sa.Length >= 5)
+            {
+                string tstr = sa[1];
+                int fi = Int32.Parse(tstr.Split('/')[0]);
+                int ti = Int32.Parse(tstr.Split('/')[1]);
+
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    prbc.Maximum = ti;
+                    prbc.Value = fi;
+                }));
+
+            }
+
+        }
+
         private void btnstart_Click(object sender, EventArgs e)
         {
-            int i = "00:10:08,580 --> 00:10:14,220".IndexOf("-->");
-            string[] sa = "00:10:08,580 --> 00:10:14,220".Split(new char[]{'-', '-', '>'}, StringSplitOptions.RemoveEmptyEntries);
-            MessageBox.Show(sa[1]);
+
+            ParseProgress("Progress: 33067/33067 - Lines: 549 - Done");
+            string[] sa = "avis [info]: 1920x1080 @ 23.98 fps (33067 frames)".Split(' ');
+
+            return;
+
+
+            Shell shell = new Shell("D:\\git\\avs2bdnxml-gui\\Debug\\avs2bdnxml.exe", "-t Title -l zho -v 720p -f 23.976 -a1 -p1 -b1 -m3 -o x:\\ss\\1\\1.xml -o x:\\ss\\1\\1.sup X:\\ss\\1\\1.avs", "X:\\ss\\1\\", this.OutputDataReceived);
+            shell.Start();
+
+            //int i = "00:10:08,580 --> 00:10:14,220".IndexOf("-->");
+            //string[] sa = "00:10:08,580 --> 00:10:14,220".Split(new char[]{'-', '-', '>'}, StringSplitOptions.RemoveEmptyEntries);
+            //MessageBox.Show(sa[1]);
             //ASSFile assfile = Subtitle.LoadFromFile(Directory.GetCurrentDirectory() + "\\1.ass");
             //int fcount = Subtitle.GetFrameCount(Directory.GetCurrentDirectory() + "\\1.ass", Common.FPSList[0], 0);
             //MessageBox.Show(fcount.ToString());
@@ -48,6 +87,14 @@ namespace avs2bdnxml_gui
         private void btnstop_Click(object sender, EventArgs e)
         {
             //shell.Stop();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+            
+
+            //
         }
 
 
