@@ -10,7 +10,7 @@ namespace avs2bdnxml_gui
     public class Common
     {
         #region Members
-        public static Resolution[] ResolutionList = new Resolution[] { new Resolution(1920, 1080), new Resolution(1280, 720), new Resolution(720, 480), new Resolution(854, 480), new Resolution(720, 576) };
+        public static Resolution[] ResolutionList = new Resolution[] { new Resolution(1920, 1080), new Resolution(1280, 720), new Resolution(720, 480), new Resolution(854, 480), new Resolution(1024, 576) };
 
         public static double[] FPSList = new double[] { 23.976, 29.970, 25, 24 };
         public enum FileType

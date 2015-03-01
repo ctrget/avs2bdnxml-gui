@@ -60,6 +60,55 @@ namespace avs2bdnxml_gui
 
         }
 
+
+        private void MakeAvs(Common.TaskData ta)
+        {
+            List<string> olst = new List<string>();
+
+            int fcount = 0;
+            double fps;
+            Common.Resolution res;
+            fps = Common.FPSList[ta.FPSIndex];
+            res = Common.ResolutionList[ta.ResolutionIndex];
+            Common.FileType ftype = Common.GetFileType(ta.FileFullPath);
+
+            if (ftype == Common.FileType.ASS)
+            {
+                fcount = ASSFile.GetFrameCount(ta.FileFullPath, fps);
+            }
+            else if (ftype == Common.FileType.SSA)
+            {
+                fcount = SSAFile.GetFrameCount(ta.FileFullPath, fps);
+            }
+
+            if (ta.UseVSMod)
+            {
+                olst.Add("LoadPlugin(\"" + Directory.GetCurrentDirectory() + "\\core\\VSFilter.dll\")");
+            }
+            else
+            {
+                olst.Add("LoadPlugin(\"" + Directory.GetCurrentDirectory() + "\\core\\VSFilterMod.dll\")");
+            }
+
+            olst.Add("MaskSub(\"" + ta.FileFullPath + "\", " + res.X.ToString() + ", " + res.Y.ToString() + ", " + fps.ToString() + ", " + fcount.ToString() + ")");
+
+
+            if (ta.ResolutionIndex == 3)
+            {
+                olst.Add("LanczosResize(720,480)");
+            }
+            else if (ta.ResolutionIndex == 4)
+            {
+                olst.Add("LanczosResize(720,576)");
+            }
+            else
+            {
+                olst.Add("LanczosResize(" + res.X.ToString() + ", " + res.Y.ToString() + ")");
+            }
+                
+
+        }
+
         private void btnstart_Click(object sender, EventArgs e)
         {
 
