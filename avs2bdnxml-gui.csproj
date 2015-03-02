@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BDN.cs" />
+    <Compile Include="HashConfig.cs" />
     <Compile Include="SRTFile.cs" />
     <Compile Include="SSAFile.cs" />
     <Compile Include="ASSFile.cs" />

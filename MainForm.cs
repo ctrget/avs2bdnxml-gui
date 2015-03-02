@@ -111,9 +111,10 @@ namespace avs2bdnxml_gui
 
         private void btnstart_Click(object sender, EventArgs e)
         {
+            BDN bdn = new BDN();
 
-            ParseProgress("Progress: 33067/33067 - Lines: 549 - Done");
-            string[] sa = "avis [info]: 1920x1080 @ 23.98 fps (33067 frames)".Split(' ');
+            bdn.LoadBDNXML(Directory.GetCurrentDirectory() + "\\BDN.xml");
+
 
             return;
 

@@ -113,7 +113,7 @@ namespace avs2bdnxml_gui
 
 
             framel = at.GetSecond() * fps;
-            return (int)Math.Round(framel);
+            return (int)(framel);
         }
         #endregion
         #region Class ASS_Header

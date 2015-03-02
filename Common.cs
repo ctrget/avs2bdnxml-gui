@@ -91,6 +91,63 @@ namespace avs2bdnxml_gui
 
             return ls;
         }
+
+
+        public static string PlusTC(string tc, double fps, int flong)
+        {
+            int hour, minute, second, frame;
+            string shour, sminute, ssecond, sframe;
+            string[] sa = tc.Split(':');
+            int.TryParse(sa[0], out hour);
+            int.TryParse(sa[1], out minute);
+            int.TryParse(sa[2], out second);
+            int.TryParse(sa[3], out frame);
+            frame += flong;
+
+            if (frame > fps)
+            {
+                second += (int)(frame / fps);
+                frame = (int)(frame % fps);
+            }
+
+            if (second > 59)
+            {
+                minute += (int)(second / 60);
+                second = second % 60;
+            }
+
+            if (minute > 59)
+            {
+                hour += (int)(minute / 60);
+                minute = minute % 60;
+            }
+
+            shour = hour.ToString(); sminute = minute.ToString(); ssecond = second.ToString(); sframe = frame.ToString();
+
+            if (hour < 10)
+            {
+                shour = "0" + shour;
+            }
+
+            if (minute < 10)
+            {
+                sminute = "0" + sminute;
+            }
+
+            if (second < 10)
+            {
+                ssecond = "0" + ssecond;
+            }
+
+            if (frame < 10)
+            {
+                sframe = "0" + sframe;
+            }
+
+            return shour + ":" + sminute + ":" + ssecond + ":" + sframe;
+        }
+
+
         #endregion
         #region Class SUBTime
         public class SUBTime
@@ -149,7 +206,7 @@ namespace avs2bdnxml_gui
                 {
                     ssecond *= 10;
                 }
-                
+
                 at.SSecond = ssecond;
                 return at;
             }
@@ -292,7 +349,6 @@ namespace avs2bdnxml_gui
         }
 
         #endregion
-
     }
     #endregion
 
