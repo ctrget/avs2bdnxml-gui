@@ -13,7 +13,6 @@ namespace avs2bdnxml_gui
         private string _filename;
         private string _args;
         private string _workdir;
-        private bool _isrunning = false;
         private int _exitcode = 0;
         private Process _process;
         
@@ -52,11 +51,9 @@ namespace avs2bdnxml_gui
             if (!this._process.Start())
             {
                 this._exitcode = this._process.ExitCode;
-                this._isrunning = false;
                 return;
             }
 
-            this._isrunning = true;
             this._process.BeginOutputReadLine();
             this._process.BeginErrorReadLine();
 
@@ -66,7 +63,6 @@ namespace avs2bdnxml_gui
         public void Stop()
         {
             this._process.Kill();
-            this._isrunning = false;
         }
 
 

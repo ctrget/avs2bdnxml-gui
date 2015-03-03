@@ -151,6 +151,12 @@ namespace avs2bdnxml_gui
         private Common.ConfigData GetCurrentConfig()
         {
             Common.ConfigData cdata = new Common.ConfigData();
+
+            if (tbxoutpath.Text.Trim() == "")
+            {
+                tbxoutpath.Text = Directory.GetCurrentDirectory() + "\\";
+            }
+
             cdata.ResolutionIndex = cbxresolution.SelectedIndex;
             cdata.FPSIndex = cbxfps.SelectedIndex;
             cdata.Lang = tbxlang.Text;
@@ -344,7 +350,7 @@ namespace avs2bdnxml_gui
                 sup = " -o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".sup\" ";
             }
 
-            string param = "-t " + filemainname + " -l " + tdata.CData.Lang + " -v " + resolution + " -f " + fps + _x + _y + _s + _m + _a + _b + _p + "-o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".xml\"" + sup + "\"" + workpath + "\\" + filemainname + "\\" + filemainname + ".avs\"";
+            string param = "-t \"" + filemainname + "\" -l " + tdata.CData.Lang + " -v " + resolution + " -f " + fps + _x + _y + _s + _m + _a + _b + _p + "-o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".xml\"" + sup + "\"" + workpath + "\\" + filemainname + "\\" + filemainname + ".avs\"";
             _shell = new Shell(_avs2bdnxmlpath, param, workpath, OutputDataReceived);
             _shell.Start();
 
@@ -428,10 +434,7 @@ namespace avs2bdnxml_gui
             {
                 if (lbxtask.SelectedItems.Count > 0)
                 {
-                    if (tbxoutpath.Text.Trim() == "")
-                    {
-                        tbxoutpath.Text = Directory.GetCurrentDirectory() + "\\";
-                    }
+        
 
                     SaveConfig();
 
