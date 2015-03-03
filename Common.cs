@@ -39,11 +39,33 @@ namespace avs2bdnxml_gui
         {
             public string FileName { get; set; }
             public string FileFullPath { get; set; }
+            public ConfigData CData { get; set; }
+            public TaskData()
+            {
+                CData = new ConfigData();
+            }
+
+        }
+        #endregion
+        #region Class ConfigData
+        [Serializable]
+        public class ConfigData
+        {
             public string OutputPath { get; set; }
             public int ResolutionIndex { get; set; }
             public int FPSIndex { get; set; }
-            public bool UseVSMod { get; set; }
-
+            public string Lang { get; set; }
+            public int X_ { get; set; }
+            public int Y_ { get; set; }
+            public int S_ { get; set; }
+            public int M_ { get; set; }
+            public bool A_ { get; set; }
+            public bool P_ { get; set; }
+            public bool B_ { get; set; }
+            public bool BSup { get; set; }
+            public bool BFirstBlack { get; set; }
+            public bool BEndBlack { get; set; }
+            public bool BVSMod { get; set; }
         }
         #endregion
         #region Methods

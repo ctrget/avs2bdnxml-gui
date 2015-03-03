@@ -23,7 +23,7 @@ namespace avs2bdnxml_gui
         /// </summary>
         /// <param name="fname">需要操作的配置文件完整路径</param>
         /// <returns></returns>
-        public HashConfig(string fname = null)
+        public HashConfig(string fname)
         {
             FileName = fname;
         }
@@ -35,14 +35,24 @@ namespace avs2bdnxml_gui
         /// <returns></returns>
         public void LoadFromFile()
         {
-            if (FileName == null)
-                return;
-
             FileStream fs;
-            fs = new FileStream(FileName, FileMode.Open);
-            BinaryFormatter bf = new BinaryFormatter();
-            _hc = (Hashtable)bf.Deserialize(fs);
-            fs.Close();
+
+            if (!File.Exists(FileName))
+            {
+                fs = File.Create(FileName);
+                fs.Close();
+                SaveFromFile();
+
+            }
+            else
+            {
+                fs = new FileStream(FileName, FileMode.Open);
+                BinaryFormatter bf = new BinaryFormatter();
+                _hc = (Hashtable)bf.Deserialize(fs);
+                fs.Close();
+            }
+
+            
         }
 
         /// 将HashConfig保存至配置文件
