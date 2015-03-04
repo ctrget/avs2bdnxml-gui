@@ -29,13 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.lbxtask = new System.Windows.Forms.ListBox();
             this.contextMenuStripTask = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmnuremove = new System.Windows.Forms.ToolStripMenuItem();
             this.tmnuclear = new System.Windows.Forms.ToolStripMenuItem();
             this.grbtaskdata = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnbrowser = new System.Windows.Forms.Button();
             this.tbxoutpath = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cbxenvsmod = new System.Windows.Forms.CheckBox();
@@ -69,6 +70,11 @@
             this.grbtasklst = new System.Windows.Forms.GroupBox();
             this.btnstop = new System.Windows.Forms.Button();
             this.btnstart = new System.Windows.Forms.Button();
+            this.worker = new System.ComponentModel.BackgroundWorker();
+            this.nicon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStripIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmnushow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmnuexit = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripTask.SuspendLayout();
             this.grbtaskdata.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -78,6 +84,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_x)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.grbtasklst.SuspendLayout();
+            this.contextMenuStripIcon.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbxtask
@@ -151,7 +158,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Controls.Add(this.btnbrowser);
             this.groupBox3.Controls.Add(this.tbxoutpath);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Location = new System.Drawing.Point(7, 29);
@@ -160,14 +167,15 @@
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
             // 
-            // button1
+            // btnbrowser
             // 
-            this.button1.Location = new System.Drawing.Point(254, 15);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(46, 21);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "浏览";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnbrowser.Location = new System.Drawing.Point(254, 15);
+            this.btnbrowser.Name = "btnbrowser";
+            this.btnbrowser.Size = new System.Drawing.Size(46, 21);
+            this.btnbrowser.TabIndex = 13;
+            this.btnbrowser.Text = "浏览";
+            this.btnbrowser.UseVisualStyleBackColor = true;
+            this.btnbrowser.Click += new System.EventHandler(this.btnbrowser_Click);
             // 
             // tbxoutpath
             // 
@@ -377,10 +385,9 @@
             // 
             // lbltasksel
             // 
-            this.lbltasksel.AutoSize = true;
             this.lbltasksel.Location = new System.Drawing.Point(67, 17);
             this.lbltasksel.Name = "lbltasksel";
-            this.lbltasksel.Size = new System.Drawing.Size(53, 12);
+            this.lbltasksel.Size = new System.Drawing.Size(238, 12);
             this.lbltasksel.TabIndex = 5;
             this.lbltasksel.Text = "全局设置";
             // 
@@ -514,6 +521,42 @@
             this.btnstart.UseVisualStyleBackColor = true;
             this.btnstart.Click += new System.EventHandler(this.btnstart_Click);
             // 
+            // worker
+            // 
+            this.worker.WorkerReportsProgress = true;
+            this.worker.WorkerSupportsCancellation = true;
+            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.worker_DoWork);
+            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.worker_ProgressChanged);
+            // 
+            // nicon
+            // 
+            this.nicon.ContextMenuStrip = this.contextMenuStripIcon;
+            this.nicon.Text = "avs2bdnxml-gui";
+            this.nicon.Visible = true;
+            this.nicon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.nicon_MouseClick);
+            // 
+            // contextMenuStripIcon
+            // 
+            this.contextMenuStripIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmnushow,
+            this.tmnuexit});
+            this.contextMenuStripIcon.Name = "contextMenuStripIcon";
+            this.contextMenuStripIcon.Size = new System.Drawing.Size(101, 48);
+            // 
+            // tmnushow
+            // 
+            this.tmnushow.Name = "tmnushow";
+            this.tmnushow.Size = new System.Drawing.Size(100, 22);
+            this.tmnushow.Text = "显示";
+            this.tmnushow.Click += new System.EventHandler(this.tmnushow_Click);
+            // 
+            // tmnuexit
+            // 
+            this.tmnuexit.Name = "tmnuexit";
+            this.tmnuexit.Size = new System.Drawing.Size(100, 22);
+            this.tmnuexit.Text = "退出";
+            this.tmnuexit.Click += new System.EventHandler(this.tmnuexit_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -525,12 +568,13 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grbtaskdata);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "avs2bdnxml-gui";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.contextMenuStripTask.ResumeLayout(false);
             this.grbtaskdata.ResumeLayout(false);
             this.grbtaskdata.PerformLayout();
@@ -543,6 +587,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.grbtasklst.ResumeLayout(false);
+            this.contextMenuStripIcon.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -558,7 +603,7 @@
         private System.Windows.Forms.ProgressBar procc;
         private System.Windows.Forms.GroupBox grbtasklst;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnbrowser;
         private System.Windows.Forms.TextBox tbxoutpath;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cbxresolution;
@@ -589,6 +634,11 @@
         private System.Windows.Forms.ToolStripMenuItem tmnuclear;
         private System.Windows.Forms.Button btnstop;
         private System.Windows.Forms.Button btnstart;
+        private System.ComponentModel.BackgroundWorker worker;
+        private System.Windows.Forms.NotifyIcon nicon;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripIcon;
+        private System.Windows.Forms.ToolStripMenuItem tmnushow;
+        private System.Windows.Forms.ToolStripMenuItem tmnuexit;
     }
 }
 

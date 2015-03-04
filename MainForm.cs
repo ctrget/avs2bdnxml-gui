@@ -18,19 +18,9 @@ namespace avs2bdnxml_gui
         private static string _avs2bdnxmlpath = Directory.GetCurrentDirectory() + "\\core\\avs2bdnxml.exe";
         private static string _vsfilterpath = Directory.GetCurrentDirectory() + "\\core\\VSFilter.dll";
         private static string _vsfiltermodpath = Directory.GetCurrentDirectory() + "\\core\\VSFilterMod.dll";
-        private static Thread _procthread;
         private static Shell _shell;
         private static List<Common.TaskData> Task_Data_List = new List<Common.TaskData>();
-        private static bool _bexit = false;
         private static int _last_task_index = -1;
-        public MainForm()
-        {
-            InitializeComponent();
-            cbxresolution.SelectedIndex = 0;
-            cbxfps.SelectedIndex = 0;
-            LoadConfig();
-            _procthread = new Thread(ProcTaskList);
-        }
 
 
         private void LoadConfig()
@@ -114,35 +104,43 @@ namespace avs2bdnxml_gui
 
         }
 
-        private void SetTotalProgress(int i)
+
+
+        private void SetUI(bool b)
         {
             this.Invoke(new MethodInvoker(() =>
             {
-                proct.Value = i;
-            }));
-        }
-
-
-        private void LockUI(bool b)
-        {
-            this.Invoke(new MethodInvoker(() =>
-            {
-                if (b)
+                try
                 {
-                    btnstart.Enabled = false;
-                    btnstop.Enabled = true;
-                    grbtaskdata.Enabled = false;
-                    grbtasklst.Enabled = false;
-                }
-                else
-                {
-                    btnstart.Enabled = true;
-                    btnstop.Enabled = false;
-                    grbtaskdata.Enabled = true;
-                    grbtasklst.Enabled = true;
-                }
-            }));
+                    procc.Value = 0;
+                    procc.Maximum = 0;
+                    proct.Value = 0;
+                    proct.Maximum = 0;
 
+                    if (b)
+                    {
+                        btnstart.Enabled = true;
+                        btnstop.Enabled = false;
+                        grbtaskdata.Enabled = true;
+                        grbtasklst.Enabled = true;
+
+                    }
+                    else
+                    {
+                        btnstart.Enabled = false;
+                        btnstop.Enabled = true;
+                        grbtaskdata.Enabled = false;
+                        grbtasklst.Enabled = false;
+                    }
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+
+
+
+            }));
         }
 
 
@@ -175,6 +173,34 @@ namespace avs2bdnxml_gui
             return cdata;
         }
 
+
+
+
+        private void AddTask(string fname)
+        {
+            lbxtask.Items.Add(Path.GetFileName(fname));
+            Common.TaskData tdata = new Common.TaskData();
+            tdata.CData = GetCurrentConfig();
+            tdata.FileFullPath = fname;
+            tdata.FileName = Path.GetFileName(fname);
+            Task_Data_List.Add(tdata);
+        }
+
+
+        private void RemoveTask(int index)
+        {
+            this.Invoke(new MethodInvoker(() =>
+            {
+                Task_Data_List.RemoveAt(index);
+
+
+                lbxtask.Items.RemoveAt(index);
+
+            }));
+        }
+
+
+
         private void MakeAvs(int index)
         {
             Common.TaskData tdata = Task_Data_List[index];
@@ -202,14 +228,16 @@ namespace avs2bdnxml_gui
 
             if (tdata.CData.BVSMod)
             {
-                olst.Add("LoadPlugin(\"" + _vsfilterpath + "\")");
+                olst.Add("LoadPlugin(\"" + _vsfiltermodpath + "\")");
+                olst.Add("MaskSubMod(\"" + tdata.FileFullPath + "\", " + res.X.ToString() + ", " + res.Y.ToString() + ", " + fps.ToString() + ", " + fcount.ToString() + ")");
             }
             else
             {
-                olst.Add("LoadPlugin(\"" + _vsfiltermodpath + "\")");
+                olst.Add("LoadPlugin(\"" + _vsfilterpath + "\")");
+                olst.Add("MaskSub(\"" + tdata.FileFullPath + "\", " + res.X.ToString() + ", " + res.Y.ToString() + ", " + fps.ToString() + ", " + fcount.ToString() + ")");
             }
 
-            olst.Add("MaskSub(\"" + tdata.FileFullPath + "\", " + res.X.ToString() + ", " + res.Y.ToString() + ", " + fps.ToString() + ", " + fcount.ToString() + ")");
+            
 
 
             if (tdata.CData.ResolutionIndex == 3)
@@ -258,119 +286,6 @@ namespace avs2bdnxml_gui
 
 
 
-        private void AddTask(string fname)
-        {
-            lbxtask.Items.Add(Path.GetFileName(fname));
-            Common.TaskData tdata = new Common.TaskData();
-            tdata.CData = GetCurrentConfig();
-            tdata.FileFullPath = fname;
-            tdata.FileName = Path.GetFileName(fname);
-            Task_Data_List.Add(tdata);
-        }
-
-        private void RemoveTask(int index)
-        {
-            this.Invoke(new MethodInvoker(() =>
-            {
-                Task_Data_List.RemoveAt(index);
-
-
-                lbxtask.Items.RemoveAt(index);
-
-            }));
-        }
-
-
-        private void ProcTaskList()
-        {
-            int i = 0;
-
-            while (lbxtask.Items.Count > 0)
-            {
-                if (_bexit)
-                {
-                    break;
-                }
-
-                ProcTask(0);
-                ++i;
-                SetTotalProgress(i);
-            }
-
-            LockUI(false);
-        }
-
-        private void ProcTask(int index)
-        {
-            Common.TaskData tdata = Task_Data_List[index];
-            MakeAvs(index);
-            string workpath = tdata.CData.OutputPath;
-            string filemainname = Path.GetFileNameWithoutExtension(tdata.FileName);
-            string resolution = (string)cbxresolution.Items[tdata.CData.ResolutionIndex];
-            string fps = (string)cbxfps.Items[tdata.CData.FPSIndex];
-            string _x = "", _y = "", _s = "", _m = "", _a = "", _b = "", _p = "", sup = "";
-
-            if (tdata.CData.X_ > 0)
-            {
-                _x = " -x" + tdata.CData.X_.ToString() + " ";
-            }
-
-            if (tdata.CData.Y_ > 0)
-            {
-                _x = " -y" + tdata.CData.Y_.ToString() + " ";
-            }
-
-            if (tdata.CData.S_ > 0)
-            {
-                _s = " -s" + tdata.CData.S_.ToString() + " ";
-            }
-
-            if (tdata.CData.M_ > 0)
-            {
-                _m = " -m" + tdata.CData.M_.ToString() + " ";
-            }
-
-            if (tdata.CData.A_)
-            {
-                _a = " -a1 ";
-            }
-
-            if (tdata.CData.B_)
-            {
-                _b = " -b1 ";
-            }
-
-            if (tdata.CData.P_)
-            {
-                _p = " -p1 ";
-            }
-
-            if (tdata.CData.BSup)
-            {
-                sup = " -o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".sup\" ";
-            }
-
-            string param = "-t \"" + filemainname + "\" -l " + tdata.CData.Lang + " -v " + resolution + " -f " + fps + _x + _y + _s + _m + _a + _b + _p + "-o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".xml\"" + sup + "\"" + workpath + "\\" + filemainname + "\\" + filemainname + ".avs\"";
-            _shell = new Shell(_avs2bdnxmlpath, param, workpath, OutputDataReceived);
-            _shell.Start();
-
-            while (!_shell.HasExited)
-            {
-                if (_bexit)
-                {
-                    _shell.Stop();
-                    return;
-                }
-                Thread.Sleep(10);
-            }
-
-
-            RemoveTask(index);
-
-
-        }
-
-
         private void btnstart_Click(object sender, EventArgs e)
         {
             if (lbxtask.Items.Count == 0)
@@ -384,22 +299,63 @@ namespace avs2bdnxml_gui
                 return;
             }
 
-            _bexit = false;
             proct.Maximum = lbxtask.Items.Count;
-            LockUI(true);
-            _procthread.Start();
+            SetUI(false);
+            worker.RunWorkerAsync();
         }
 
         private void btnstop_Click(object sender, EventArgs e)
         {
-            _bexit = true;
+            if (MessageBox.Show(this, "任务处理中 是否强制结束?", "询问", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.OK)
+            {
+                worker.CancelAsync();
+            }
+            
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+
+        private void btnbrowser_Click(object sender, EventArgs e)
         {
-            //
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.ShowNewFolderButton = true;
+            fbd.ShowDialog(this);
+            
+            if (fbd.SelectedPath != "")
+            {
+                tbxoutpath.Text = fbd.SelectedPath;
+            }
+
         }
 
+
+        public MainForm()
+        {
+            InitializeComponent();
+            this.nicon.Icon = this.Icon;
+            cbxresolution.SelectedIndex = 0;
+            cbxfps.SelectedIndex = 0;
+            LoadConfig();
+        }
+
+
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                this.WindowState = FormWindowState.Minimized;
+                e.Cancel = true;
+                this.Hide();
+            }
+        }
 
 
         private void lbxtask_DragEnter(object sender, DragEventArgs e)
@@ -434,7 +390,7 @@ namespace avs2bdnxml_gui
             {
                 if (lbxtask.SelectedItems.Count > 0)
                 {
-        
+
 
                     SaveConfig();
 
@@ -456,6 +412,8 @@ namespace avs2bdnxml_gui
             }
         }
 
+
+
         private void tmnuremove_Click(object sender, EventArgs e)
         {
             if (lbxtask.Items.Count > 0 && lbxtask.SelectedItems.Count > 0)
@@ -470,10 +428,142 @@ namespace avs2bdnxml_gui
             Task_Data_List.Clear();
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void tmnushow_Click(object sender, EventArgs e)
         {
-            SaveConfig();
+            if (!this.Visible)
+            {
+                this.Show();
+            }
         }
+
+        private void tmnuexit_Click(object sender, EventArgs e)
+        {
+            if (worker.IsBusy)
+            {
+                if (MessageBox.Show(this, "任务处理中 您确定要终止并退出吗?", "询问", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                worker.CancelAsync();
+            }
+
+            SaveConfig();
+            Application.Exit();
+        }
+
+
+
+        private void nicon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                if (!this.Visible)
+                {
+                    this.Show();
+                    this.WindowState = FormWindowState.Normal;
+                    this.Focus();
+                }
+            }
+        }
+
+
+
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int i = 0;
+
+
+            while (lbxtask.Items.Count > 0)
+            {
+                Common.TaskData tdata = Task_Data_List[0];
+                string workpath = tdata.CData.OutputPath;
+                string filemainname = Path.GetFileNameWithoutExtension(tdata.FileName);
+                string resolution = (string)cbxresolution.Items[tdata.CData.ResolutionIndex];
+                string fps = (string)cbxfps.Items[tdata.CData.FPSIndex];
+                string _x = "", _y = "", _s = "", _m = "", _a = "", _b = "", _p = "", sup = "";
+                MakeAvs(0);
+                if (tdata.CData.X_ > 0)
+                {
+                    _x = " -x" + tdata.CData.X_.ToString() + " ";
+                }
+
+                if (tdata.CData.Y_ > 0)
+                {
+                    _x = " -y" + tdata.CData.Y_.ToString() + " ";
+                }
+
+                if (tdata.CData.S_ > 0)
+                {
+                    _s = " -s" + tdata.CData.S_.ToString() + " ";
+                }
+
+                if (tdata.CData.M_ > 0)
+                {
+                    _m = " -m" + tdata.CData.M_.ToString() + " ";
+                }
+
+                if (tdata.CData.A_)
+                {
+                    _a = " -a1 ";
+                }
+
+                if (tdata.CData.B_)
+                {
+                    _b = " -b1 ";
+                }
+
+                if (tdata.CData.P_)
+                {
+                    _p = " -p1 ";
+                }
+
+                if (tdata.CData.BSup)
+                {
+                    sup = " -o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".sup\" ";
+                }
+
+                string param = "-t \"" + filemainname + "\" -l " + tdata.CData.Lang + " -v " + resolution + " -f " + fps + _x + _y + _s + _m + _a + _b + _p + "-o \"" + workpath + "\\" + filemainname + "\\" + filemainname + ".xml\"" + sup + "\"" + workpath + "\\" + filemainname + "\\" + filemainname + ".avs\"";
+                _shell = new Shell(_avs2bdnxmlpath, param, workpath, OutputDataReceived);
+                _shell.Start();
+
+                while (!_shell.HasExited)
+                {
+                    Thread.Sleep(10);
+
+                    if (worker.CancellationPending)
+                    {
+                        SetUI(true);
+                        _shell.Stop();
+                        e.Cancel = true;
+                        return;
+                    }
+
+                }
+
+
+                RemoveTask(0);
+                ++i;
+                worker.ReportProgress(i);
+            }
+            
+            SetUI(true);
+        }
+
+
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.Invoke(new MethodInvoker(() =>
+            {
+                proct.Value = e.ProgressPercentage;
+            }));
+        }
+
+
+
+
 
 
 

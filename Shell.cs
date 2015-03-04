@@ -8,28 +8,29 @@ using System.Threading;
 
 namespace avs2bdnxml_gui
 {
+    #region Class Shell
     public class Shell
     {
+        #region Members
         private string _filename;
         private string _args;
         private string _workdir;
-        private int _exitcode = 0;
         private Process _process;
+        private DataReceivedEventHandler OutputDataReceived;
         
 
-        public string filename { get { return this._filename; } }
-        public string args { get { return this._args; } }
-        public string workdir { get { return this._workdir; } }
+        public string FileName { get { return this._filename; } }
+        public string Args { get { return this._args; } }
+        public string WorkDir { get { return this._workdir; } }
         public bool HasExited { get { return this._process.HasExited; } }
-        public int exitcode { get { return this._exitcode; } }
-
-
-
+        #endregion
+        #region Constructor
         public Shell(string filename, string args, string workdir, DataReceivedEventHandler OutputDataReceived)
         {
             this._filename = filename;
             this._args = args;
             this._workdir = workdir;
+            this.OutputDataReceived = OutputDataReceived;
             this._process = new Process();
             this._process.StartInfo.FileName = this._filename;
             this._process.StartInfo.Arguments = this._args;
@@ -41,34 +42,23 @@ namespace avs2bdnxml_gui
             this._process.OutputDataReceived += OutputDataReceived;
             this._process.ErrorDataReceived += OutputDataReceived;
         }
-
-
-
-
-
+        #endregion
+        #region Methods
         public void Start()
         {
-            if (!this._process.Start())
-            {
-                this._exitcode = this._process.ExitCode;
-                return;
-            }
-
+            this._process.Start();
             this._process.BeginOutputReadLine();
             this._process.BeginErrorReadLine();
-
         }
-
-
+        
         public void Stop()
         {
             this._process.Kill();
+            this._process.CancelOutputRead();
+            this._process.CancelErrorRead();
         }
-
-
-
-
-
+        #endregion
 
     }
+    #endregion
 }
