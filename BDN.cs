@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Xml;
 using System.IO;
 using System.Windows.Forms;
 
@@ -10,11 +11,18 @@ namespace avs2bdnxml_gui
 {
     public class BDN
     {
-        private BDNXML _bdnxml;
+        private XmlDocument _bdnxml;
+        private string _bdnfile;
+        private Common.Resolution _res;
+        private double _fps;
         #region Constructor
-        public BDN()
+        public BDN(string fname, double fps, Common.Resolution res)
         {
-            this._bdnxml = new BDNXML();
+            this._bdnxml = new XmlDocument();
+            this._bdnxml.Load(fname);
+            this._bdnfile = fname;
+            this._fps = fps;
+            this._res = res;
         }
         #endregion
         #region Class BDNXML
@@ -66,6 +74,8 @@ namespace avs2bdnxml_gui
         }
         #endregion
         #region Methods
+
+        /*
         public void LoadBDNXML(string fname)
         {
             if(!File.Exists(fname))
@@ -74,6 +84,7 @@ namespace avs2bdnxml_gui
             }
 
             XElement xe = XElement.Load(fname);
+            
 
             IEnumerable<XElement> h_nodes = from target in xe.Elements("Description")
                                                 .Descendants()
@@ -137,8 +148,76 @@ namespace avs2bdnxml_gui
                 this._bdnxml.BDNEvents.Add(be);
             }
         }
+  
+         
+        */
 
 
+
+        public void SaveBDN()
+        {
+            this._bdnxml.Save(this._bdnfile);
+        }
+
+
+        public void SetBDNEventCount(int pi)
+        {
+            XmlNode HeadNode = this._bdnxml.SelectSingleNode("/BDN/Description/Events");
+            XmlNode EventCountNode = HeadNode.Attributes.GetNamedItem("NumberofEvents");
+            Int64 ecount = 0;
+            Int64.TryParse(EventCountNode.Value, out ecount);
+            ecount += pi;
+            EventCountNode.Value = ecount.ToString();
+        }
+
+        public string GetBDNLastOut()
+        {
+            XmlNode HeadNode = this._bdnxml.SelectSingleNode("/BDN/Description/Events");
+            XmlNode LastOutNode = HeadNode.Attributes.GetNamedItem("LastEventOutTC");
+            return LastOutNode.Value;
+        }
+
+
+        public void InsertBDNEvent(string intc, string outtc)
+        {
+            XmlNode EventRoot = this._bdnxml.SelectSingleNode("/BDN/Events");
+            XmlElement NewEvent = this._bdnxml.CreateElement("Event");
+            NewEvent.SetAttribute("Forced", "False");
+            NewEvent.SetAttribute("InTC", intc);
+            NewEvent.SetAttribute("OutTC", outtc);
+            XmlElement EventImg = this._bdnxml.CreateElement("Graphic");
+            EventImg.InnerText = "0.png";
+            EventImg.SetAttribute("Width", this._res.X.ToString());
+            EventImg.SetAttribute("Height", this._res.Y.ToString());
+            EventImg.SetAttribute("X", "0");
+            EventImg.SetAttribute("Y", "0");
+            NewEvent.AppendChild(EventImg);
+            EventRoot.AppendChild(NewEvent);
+            this.SetBDNEventCount(1);
+        }
+
+
+        public void InsertBlack(bool bfirst, string pngfile)
+        {
+            if (!File.Exists(pngfile))
+            {
+                Common.SavePng(pngfile);
+            }
+
+            if (bfirst)
+            {
+                this.InsertBDNEvent("00:00:00:00", "00:00:00:08");
+
+            }
+            else
+            {
+                string lastout = this.GetBDNLastOut();
+                string lastblkin = Common.PlusTC(lastout, this._fps, 1500);
+                string lastblkout = Common.PlusTC(lastblkin, this._fps, 200);
+                this.InsertBDNEvent(lastblkin, lastblkout);
+            }
+
+        }
 
         #endregion
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Drawing;
+
 
 namespace avs2bdnxml_gui
 {
@@ -168,6 +170,9 @@ namespace avs2bdnxml_gui
 
             return shour + ":" + sminute + ":" + ssecond + ":" + sframe;
         }
+
+
+
 
 
         #endregion
@@ -369,6 +374,20 @@ namespace avs2bdnxml_gui
 
 
         }
+
+
+        public static void SavePng(string ofname)
+        {
+            using (FileStream fs = new FileStream(ofname, FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    fs.Write(avs2bdnxml_gui.Properties.Resources.black, 0, avs2bdnxml_gui.Properties.Resources.black.Length);
+                }
+            }
+            
+        }
+
 
         #endregion
     }

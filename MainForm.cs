@@ -96,8 +96,11 @@ namespace avs2bdnxml_gui
 
                 this.Invoke(new MethodInvoker(() =>
                 {
+
                     procc.Maximum = ti;
                     procc.Value = fi;
+
+
                 }));
 
             }
@@ -115,7 +118,7 @@ namespace avs2bdnxml_gui
                     procc.Value = 0;
                     procc.Maximum = 0;
                     proct.Value = 0;
-                    proct.Maximum = 0;
+                    //proct.Maximum = 0;
 
                     if (b)
                     {
@@ -237,7 +240,7 @@ namespace avs2bdnxml_gui
                 olst.Add("MaskSub(\"" + tdata.FileFullPath + "\", " + res.X.ToString() + ", " + res.Y.ToString() + ", " + fps.ToString() + ", " + fcount.ToString() + ")");
             }
 
-            
+
 
 
             if (tdata.CData.ResolutionIndex == 3)
@@ -288,6 +291,7 @@ namespace avs2bdnxml_gui
 
         private void btnstart_Click(object sender, EventArgs e)
         {
+   
             if (lbxtask.Items.Count == 0)
             {
                 return;
@@ -310,7 +314,7 @@ namespace avs2bdnxml_gui
             {
                 worker.CancelAsync();
             }
-            
+
         }
 
 
@@ -319,7 +323,7 @@ namespace avs2bdnxml_gui
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.ShowNewFolderButton = true;
             fbd.ShowDialog(this);
-            
+
             if (fbd.SelectedPath != "")
             {
                 tbxoutpath.Text = fbd.SelectedPath;
@@ -542,13 +546,28 @@ namespace avs2bdnxml_gui
 
                 }
 
+                if (tdata.CData.BFirstBlack)
+                {
+                    BDN bdn = new BDN(workpath + "\\" + filemainname + "\\" + filemainname + ".xml", Common.FPSList[tdata.CData.FPSIndex], Common.ResolutionList[tdata.CData.ResolutionIndex]);
+                    bdn.InsertBlack(true,  workpath + "\\" + filemainname + "\\" + "0.png");
+                    bdn.SaveBDN();
+                }
+
+                if (tdata.CData.BEndBlack)
+                {
+                    BDN bdn = new BDN(workpath + "\\" + filemainname + "\\" + filemainname + ".xml", Common.FPSList[tdata.CData.FPSIndex], Common.ResolutionList[tdata.CData.ResolutionIndex]);
+                    bdn.InsertBlack(false,  workpath + "\\" + filemainname + "\\" + "0.png");
+                    bdn.SaveBDN();
+                }
+
 
                 RemoveTask(0);
                 ++i;
                 worker.ReportProgress(i);
             }
-            
+
             SetUI(true);
+            MessageBox.Show(this, "全部操作完成", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
