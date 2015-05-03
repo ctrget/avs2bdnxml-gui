@@ -64,6 +64,7 @@ namespace avs2bdnxml_gui
             public bool A_ { get; set; }
             public bool P_ { get; set; }
             public bool B_ { get; set; }
+            public int EBlacka { get; set; }
             public bool BSup { get; set; }
             public bool BFirstBlack { get; set; }
             public bool BEndBlack { get; set; }

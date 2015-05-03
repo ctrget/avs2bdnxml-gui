@@ -53,6 +53,7 @@ namespace avs2bdnxml_gui
             cbx_a.Checked = cdata.A_;
             cbx_p.Checked = cdata.P_;
             cbx_b.Checked = cdata.B_;
+            num_eblacka.Value = cdata.EBlacka;
             cbxensup.Checked = cdata.BSup;
             cbxfblk.Checked = cdata.BFirstBlack;
             cbxeblk.Checked = cdata.BEndBlack;
@@ -168,6 +169,7 @@ namespace avs2bdnxml_gui
             cdata.A_ = cbx_a.Checked;
             cdata.P_ = cbx_p.Checked;
             cdata.B_ = cbx_b.Checked;
+            cdata.EBlacka = (int)num_eblacka.Value;
             cdata.BSup = cbxensup.Checked;
             cdata.BFirstBlack = cbxfblk.Checked;
             cdata.BEndBlack = cbxeblk.Checked;
@@ -556,7 +558,7 @@ namespace avs2bdnxml_gui
                 if (tdata.CData.BEndBlack)
                 {
                     BDN bdn = new BDN(workpath + "\\" + filemainname + "\\" + filemainname + ".xml", Common.FPSList[tdata.CData.FPSIndex], Common.ResolutionList[tdata.CData.ResolutionIndex]);
-                    bdn.InsertBlack(false,  workpath + "\\" + filemainname + "\\" + "0.png");
+                    bdn.InsertBlack(false,  workpath + "\\" + filemainname + "\\" + "0.png", tdata.CData.EBlacka);
                     bdn.SaveBDN();
                 }
 

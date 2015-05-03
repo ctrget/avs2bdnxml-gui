@@ -197,7 +197,7 @@ namespace avs2bdnxml_gui
         }
 
 
-        public void InsertBlack(bool bfirst, string pngfile)
+        public void InsertBlack(bool bfirst, string pngfile, int eblacka = 1500)
         {
             if (!File.Exists(pngfile))
             {
@@ -212,8 +212,8 @@ namespace avs2bdnxml_gui
             else
             {
                 string lastout = this.GetBDNLastOut();
-                string lastblkin = Common.PlusTC(lastout, this._fps, 1500);
-                string lastblkout = Common.PlusTC(lastblkin, this._fps, 200);
+                string lastblkin = Common.PlusTC(lastout, this._fps, eblacka);
+                string lastblkout = Common.PlusTC(lastblkin, this._fps, 30);
                 this.InsertBDNEvent(lastblkin, lastblkout);
             }
 

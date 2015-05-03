@@ -75,6 +75,8 @@
             this.contextMenuStripIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmnushow = new System.Windows.Forms.ToolStripMenuItem();
             this.tmnuexit = new System.Windows.Forms.ToolStripMenuItem();
+            this.label12 = new System.Windows.Forms.Label();
+            this.num_eblacka = new System.Windows.Forms.NumericUpDown();
             this.contextMenuStripTask.SuspendLayout();
             this.grbtaskdata.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -85,6 +87,7 @@
             this.groupBox1.SuspendLayout();
             this.grbtasklst.SuspendLayout();
             this.contextMenuStripIcon.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_eblacka)).BeginInit();
             this.SuspendLayout();
             // 
             // lbxtask
@@ -125,6 +128,8 @@
             // 
             // grbtaskdata
             // 
+            this.grbtaskdata.Controls.Add(this.label12);
+            this.grbtaskdata.Controls.Add(this.num_eblacka);
             this.grbtaskdata.Controls.Add(this.groupBox3);
             this.grbtaskdata.Controls.Add(this.cbxenvsmod);
             this.grbtaskdata.Controls.Add(this.cbxeblk);
@@ -151,7 +156,7 @@
             this.grbtaskdata.Controls.Add(this.cbxresolution);
             this.grbtaskdata.Location = new System.Drawing.Point(348, 1);
             this.grbtaskdata.Name = "grbtaskdata";
-            this.grbtaskdata.Size = new System.Drawing.Size(318, 267);
+            this.grbtaskdata.Size = new System.Drawing.Size(318, 309);
             this.grbtaskdata.TabIndex = 11;
             this.grbtaskdata.TabStop = false;
             this.grbtaskdata.Text = "任务属性";
@@ -198,7 +203,7 @@
             this.cbxenvsmod.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbxenvsmod.Checked = true;
             this.cbxenvsmod.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbxenvsmod.Location = new System.Drawing.Point(241, 219);
+            this.cbxenvsmod.Location = new System.Drawing.Point(166, 253);
             this.cbxenvsmod.Name = "cbxenvsmod";
             this.cbxenvsmod.Size = new System.Drawing.Size(70, 22);
             this.cbxenvsmod.TabIndex = 22;
@@ -210,7 +215,7 @@
             this.cbxeblk.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbxeblk.Checked = true;
             this.cbxeblk.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbxeblk.Location = new System.Drawing.Point(166, 219);
+            this.cbxeblk.Location = new System.Drawing.Point(90, 253);
             this.cbxeblk.Name = "cbxeblk";
             this.cbxeblk.Size = new System.Drawing.Size(70, 22);
             this.cbxeblk.TabIndex = 21;
@@ -222,7 +227,7 @@
             this.cbxfblk.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbxfblk.Checked = true;
             this.cbxfblk.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbxfblk.Location = new System.Drawing.Point(90, 219);
+            this.cbxfblk.Location = new System.Drawing.Point(8, 253);
             this.cbxfblk.Name = "cbxfblk";
             this.cbxfblk.Size = new System.Drawing.Size(70, 22);
             this.cbxfblk.TabIndex = 20;
@@ -234,7 +239,7 @@
             this.cbxensup.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbxensup.Checked = true;
             this.cbxensup.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbxensup.Location = new System.Drawing.Point(8, 219);
+            this.cbxensup.Location = new System.Drawing.Point(241, 225);
             this.cbxensup.Name = "cbxensup";
             this.cbxensup.Size = new System.Drawing.Size(70, 22);
             this.cbxensup.TabIndex = 19;
@@ -246,7 +251,7 @@
             this.cbx_b.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbx_b.Checked = true;
             this.cbx_b.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbx_b.Location = new System.Drawing.Point(241, 181);
+            this.cbx_b.Location = new System.Drawing.Point(166, 225);
             this.cbx_b.Name = "cbx_b";
             this.cbx_b.Size = new System.Drawing.Size(70, 22);
             this.cbx_b.TabIndex = 18;
@@ -258,7 +263,7 @@
             this.cbx_p.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbx_p.Checked = true;
             this.cbx_p.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbx_p.Location = new System.Drawing.Point(166, 181);
+            this.cbx_p.Location = new System.Drawing.Point(90, 225);
             this.cbx_p.Name = "cbx_p";
             this.cbx_p.Size = new System.Drawing.Size(70, 22);
             this.cbx_p.TabIndex = 17;
@@ -270,7 +275,7 @@
             this.cbx_a.Appearance = System.Windows.Forms.Appearance.Button;
             this.cbx_a.Checked = true;
             this.cbx_a.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbx_a.Location = new System.Drawing.Point(90, 181);
+            this.cbx_a.Location = new System.Drawing.Point(8, 225);
             this.cbx_a.Name = "cbx_a";
             this.cbx_a.Size = new System.Drawing.Size(70, 22);
             this.cbx_a.TabIndex = 16;
@@ -503,9 +508,9 @@
             // btnstop
             // 
             this.btnstop.Enabled = false;
-            this.btnstop.Location = new System.Drawing.Point(556, 276);
+            this.btnstop.Location = new System.Drawing.Point(211, 320);
             this.btnstop.Name = "btnstop";
-            this.btnstop.Size = new System.Drawing.Size(65, 34);
+            this.btnstop.Size = new System.Drawing.Size(71, 34);
             this.btnstop.TabIndex = 15;
             this.btnstop.Text = "停止";
             this.btnstop.UseVisualStyleBackColor = true;
@@ -513,9 +518,9 @@
             // 
             // btnstart
             // 
-            this.btnstart.Location = new System.Drawing.Point(407, 276);
+            this.btnstart.Location = new System.Drawing.Point(62, 320);
             this.btnstart.Name = "btnstart";
-            this.btnstart.Size = new System.Drawing.Size(65, 34);
+            this.btnstart.Size = new System.Drawing.Size(71, 34);
             this.btnstart.TabIndex = 14;
             this.btnstart.Text = "开始";
             this.btnstart.UseVisualStyleBackColor = true;
@@ -557,11 +562,37 @@
             this.tmnuexit.Text = "退出";
             this.tmnuexit.Click += new System.EventHandler(this.tmnuexit_Click);
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(88, 165);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(53, 12);
+            this.label12.TabIndex = 24;
+            this.label12.Text = "尾黑延后";
+            // 
+            // num_eblacka
+            // 
+            this.num_eblacka.Location = new System.Drawing.Point(90, 182);
+            this.num_eblacka.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.num_eblacka.Name = "num_eblacka";
+            this.num_eblacka.Size = new System.Drawing.Size(70, 21);
+            this.num_eblacka.TabIndex = 23;
+            this.num_eblacka.Value = new decimal(new int[] {
+            1500,
+            0,
+            0,
+            0});
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(673, 316);
+            this.ClientSize = new System.Drawing.Size(673, 366);
             this.Controls.Add(this.btnstop);
             this.Controls.Add(this.btnstart);
             this.Controls.Add(this.grbtasklst);
@@ -588,6 +619,7 @@
             this.groupBox1.PerformLayout();
             this.grbtasklst.ResumeLayout(false);
             this.contextMenuStripIcon.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.num_eblacka)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -639,6 +671,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripIcon;
         private System.Windows.Forms.ToolStripMenuItem tmnushow;
         private System.Windows.Forms.ToolStripMenuItem tmnuexit;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown num_eblacka;
     }
 }
 
